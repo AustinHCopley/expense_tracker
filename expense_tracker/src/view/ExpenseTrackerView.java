@@ -64,7 +64,7 @@ public class ExpenseTrackerView extends JFrame {
     amountFilterBtn = new JButton("Filter by Amount");
 
     undoBtn = new JButton("Undo");
-  
+    undoBtn.setEnabled(false);
 
   
     // Layout components
@@ -130,7 +130,7 @@ public class ExpenseTrackerView extends JFrame {
 
   public String getCategoryFilterInput() {
     return JOptionPane.showInputDialog(this, "Enter Category Filter:");
-}
+  }
 
 
   public void addApplyAmountFilterListener(ActionListener listener) {
@@ -149,30 +149,32 @@ public class ExpenseTrackerView extends JFrame {
   }
 
   public void refreshTable(List<Transaction> transactions) {
-      // Clear existing rows
-      model.setRowCount(0);
-      // Get row count
-      int rowNum = model.getRowCount();
-      double totalCost=0;
-      // Calculate total cost
-      for(Transaction t : transactions) {
-        totalCost+=t.getAmount();
-      }
-  
-      // Add rows from transactions list
-      for(Transaction t : transactions) {
-        model.addRow(new Object[]{rowNum+=1,t.getAmount(), t.getCategory(), t.getTimestamp()}); 
-      }
-      // Add total row
-      Object[] totalRow = {"Total", null, null, totalCost};
-      model.addRow(totalRow);
-  
-      // Fire table update
-      transactionsTable.updateUI();
-  
-    }  
-  
+    // Clear existing rows
+    model.setRowCount(0);
+    // Get row count
+    int rowNum = model.getRowCount();
+    double totalCost=0;
+    // Calculate total cost
+    for(Transaction t : transactions) {
+      totalCost+=t.getAmount();
+    }
 
+    // Add rows from transactions list
+    for(Transaction t : transactions) {
+      model.addRow(new Object[]{rowNum+=1,t.getAmount(), t.getCategory(), t.getTimestamp()}); 
+    }
+    // Add total row
+    Object[] totalRow = {"Total", null, null, totalCost};
+    model.addRow(totalRow);
+    
+    // update visibility of undo button
+    updateUndoVisibility();
+
+    // Fire table update
+    transactionsTable.updateUI();
+    
+  }  
+  
   public JButton getAddTransactionBtn() {
     return addTransactionBtn;
   }
@@ -186,6 +188,9 @@ public class ExpenseTrackerView extends JFrame {
     undoBtn.addActionListener(listener);
   }
 
+  public void updateUndoVisibility() { // row count will only be as low as 1 after first transaction is added due to the 'Total' row
+    undoBtn.setEnabled(model.getRowCount() > 1);
+  }
 
   public void highlightRows(List<Integer> rowIndexes) {
       // The row indices are being used as hashcodes for the transactions.
