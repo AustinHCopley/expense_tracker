@@ -68,6 +68,9 @@ public class ExpenseTrackerApp {
     view.toFront();
    }});
     
+    view.addUndoBtnListener(e -> {
+      controller.removeTransaction();
+    });
 
   }
 }

@@ -26,6 +26,7 @@ public class ExpenseTrackerView extends JFrame {
 
   private JTextField amountFilterField;
   private JButton amountFilterBtn;
+  private JButton undoBtn;
 
   
 
@@ -61,6 +62,8 @@ public class ExpenseTrackerView extends JFrame {
     JLabel amountFilterLabel = new JLabel("Filter by Amount:");
     amountFilterField = new JTextField(10);
     amountFilterBtn = new JButton("Filter by Amount");
+
+    undoBtn = new JButton("Undo");
   
 
   
@@ -75,6 +78,7 @@ public class ExpenseTrackerView extends JFrame {
     JPanel buttonPanel = new JPanel();
     buttonPanel.add(amountFilterBtn);
     buttonPanel.add(categoryFilterBtn);
+    buttonPanel.add(undoBtn);
   
     // Add panels to frame
     add(inputPanel, BorderLayout.NORTH);
@@ -171,6 +175,15 @@ public class ExpenseTrackerView extends JFrame {
 
   public JButton getAddTransactionBtn() {
     return addTransactionBtn;
+  }
+
+  // UNDO BUTTON
+  public JButton getUndoBtn() {
+    return undoBtn;
+  }
+
+  public void addUndoBtnListener(ActionListener listener) {
+    undoBtn.addActionListener(listener);
   }
 
 

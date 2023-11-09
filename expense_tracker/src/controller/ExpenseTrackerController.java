@@ -72,4 +72,18 @@ public class ExpenseTrackerController {
       view.toFront();}
 
   }
+  
+  // For undo functionality:
+  public boolean removeTransaction() {
+    int last_t = model.getTransactions().size() - 1;
+    if (last_t < 0) { // no transactions
+      JOptionPane.showMessageDialog(view, "No transactions to undo");
+      return false;
+    } else {
+      model.removeTransaction(model.getTransactions().get(last_t));
+      // refresh to update
+      refresh();
+      return true;
+    }
+  }
 }
