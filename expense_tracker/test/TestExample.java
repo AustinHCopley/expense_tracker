@@ -126,18 +126,26 @@ public class TestExample {
         String category = "food";
         assertTrue(controller.addTransaction(amount, category));
     
-        // Post-condition: List of transactions contains only
-	    //                 the added transaction	
+        // Post-condition: View table contains only the added transaction
+        //                 Table has two rows: transaction and total
+        //                 Transaction row has amount and category that match the model
         JTable table = view.getTransactionsTable();
         assertEquals(2, table.getRowCount());
     
         // Check the contents of the list
         Object viewCell = table.getValueAt(0, 1);
         float cellAmount = Float.parseFloat(viewCell.toString());
-	
-        // Check the total amount TODO: maybe refactor to use checkTransaction method defined above
-        assertEquals(amount, cellAmount, 0.01);
-        // TODO check total cost in view is same as getTotalCost method
+        viewCell = table.getValueAt(0,2);
+        String cellCategory = viewCell.toString();
+
+        // Check that amount and category in view is the same as the model
+        Transaction firstTransaction = model.getTransactions().get(0);
+        checkTransaction(cellAmount, cellCategory, firstTransaction);
+
+        // check total cost in view is same as getTotalCost method
+        viewCell = table.getValueAt(1,3);
+        cellAmount = Float.parseFloat(viewCell.toString());
+        assertEquals(cellAmount, getTotalCost(), 0.01);
     }
 
 
