@@ -15,6 +15,8 @@ import model.ExpenseTrackerModel;
 import model.Transaction;
 import view.ExpenseTrackerView;
 
+import javax.swing.*;
+
 
 public class TestExample {
   
@@ -112,5 +114,110 @@ public class TestExample {
         double totalCost = getTotalCost();
         assertEquals(0.00, totalCost, 0.01);
     }
+
+
+    @Test
+    public void testAddTransactionView() {
+        // - Steps: Add a transaction with amount 50.00 and category ”food”
+        // - Expected Output: Transaction is added to the table, Total Cost is updated
+        assertEquals(0, model.getTransactions().size());
     
+        double amount = 50.0;
+        String category = "food";
+        assertTrue(controller.addTransaction(amount, category));
+    
+        // Post-condition: List of transactions contains only
+	    //                 the added transaction	
+        JTable table = view.getTransactionsTable();
+        assertEquals(2, table.getRowCount());
+    
+        // Check the contents of the list
+        Object viewCell = table.getValueAt(0, 1);
+        float cellAmount = Float.parseFloat(viewCell.toString());
+	
+        // Check the total amount TODO: maybe refactor to use checkTransaction method defined above
+        assertEquals(amount, cellAmount, 0.01);
+        // TODO check total cost in view is same as getTotalCost method
+    }
+
+
+    @Test
+    public void invalidInputHandling() { // TODO
+        // - Steps: Attempt to add a transaction with an invalid amount or category
+        // - Expected Output: Error messages are displayed, transactions and Total Cost remain unchanged
+        assertEquals(0, model.getTransactions().size());
+    
+        double amount = 50.0;
+        String category = "food";
+        assertTrue(controller.addTransaction(amount, category));
+        int initial_size = model.getTransactions().size();
+
+        String invalid_in = "mcdonald's";
+        assertTrue(!controller.addTransaction(amount, invalid_in));
+    
+        // Post-condition: List of transactions is the same size as before the invalid input
+        assertEquals(initial_size, model.getTransactions().size());
+    	
+        // Check the total amount
+        assertEquals(amount, getTotalCost(), 0.01);
+
+        // TODO: check that pop-up dialogue shows up
+    }
+
+
+    @Test
+    public void filterByAmount() { // TODO
+        // - Steps: Add multiple transactions with different amounts, apply amount filter
+        // - Expected Output: Only transactions matching the amount are returned (and will be highlighted)
+        assertEquals(0, model.getTransactions().size());
+    
+        double amount = 50.0;
+        String category = "food";
+        assertTrue(controller.addTransaction(amount, category));
+    
+        // ...
+    }
+
+
+    @Test
+    public void filterByCategory() { // TODO
+        // - Steps: Add multiple transactions with different categories, apply category filter
+        // - Expected Output: Only transactions matching the category are returned (and will be highlighted)
+        assertEquals(0, model.getTransactions().size());
+    
+        double amount = 50.0;
+        String category = "food";
+        assertTrue(controller.addTransaction(amount, category));
+    
+        // ...
+    }
+
+
+    @Test
+    public void undoDisallowed() { // TODO
+        // - Steps: Attempt to undo when the transactions list is empty
+        // - Expected Output: Either UI widget is disabled or an error code (exception) is returned (thrown).
+        assertEquals(0, model.getTransactions().size());
+    
+        double amount = 50.0;
+        String category = "food";
+        assertTrue(controller.addTransaction(amount, category));
+    
+        // ...
+    }
+
+
+    @Test
+    public void undoAllowed() { // TODO
+        // - Steps: Add a transaction, undo the addition
+        // - Expected Output: Transaction is removed from the table, Total Cost is updated
+        assertEquals(0, model.getTransactions().size());
+    
+        double amount = 50.0;
+        String category = "food";
+        assertTrue(controller.addTransaction(amount, category));
+    
+        // ...
+    }
+
 }
