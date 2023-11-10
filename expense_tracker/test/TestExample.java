@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import controller.ExpenseTrackerController;
+import controller.InvalidTransactionException;
 import model.ExpenseTrackerModel;
 import model.Transaction;
 import view.ExpenseTrackerView;
@@ -71,7 +72,11 @@ public class TestExample {
         // Perform the action: Add a transaction
 	double amount = 50.0;
 	String category = "food";
-        assertTrue(controller.addTransaction(amount, category));
+        try {
+            assertTrue(controller.addTransaction(amount, category));
+        } catch (InvalidTransactionException e) {
+            assertTrue(false); // test fails if exception is caught
+        }
     
         // Post-condition: List of transactions contains only
 	//                 the added transaction	
@@ -126,7 +131,11 @@ public class TestExample {
     
         double amount = 50.0;
         String category = "food";
-        assertTrue(controller.addTransaction(amount, category));
+        try {
+            assertTrue(controller.addTransaction(amount, category));
+        } catch (InvalidTransactionException e) {
+            assertTrue(false); // test fails if exception is caught
+        }
     
         // Post-condition: View table contains only the added transaction
         //                 Table has two rows: transaction and total
@@ -152,26 +161,40 @@ public class TestExample {
 
 
     @Test
-    public void invalidInputHandling() { // TODO
+    public void invalidInputHandling() {
         // - Steps: Attempt to add a transaction with an invalid amount or category
         // - Expected Output: Error messages are displayed, transactions and Total Cost remain unchanged
         assertEquals(0, model.getTransactions().size());
     
         double amount = 50.0;
         String category = "food";
-        assertTrue(controller.addTransaction(amount, category));
+        try {
+            assertTrue(controller.addTransaction(amount, category));
+        } catch (InvalidTransactionException e) {
+            assertTrue(false); // test fails if exception is caught
+        }
         int initial_size = model.getTransactions().size();
 
-        String invalid_in = "mcdonald's";
-        assertTrue(!controller.addTransaction(amount, invalid_in));
-    
+        String invalid_cat = "mcdonald's";
+        double invalid_amnt = -21.0;
+        // Test invalid amount
+        try {
+            controller.addTransaction(invalid_amnt, category);
+        } catch (InvalidTransactionException e) {
+            assertEquals("Invalid transaction", e.getMessage());
+        }
+        // Test invalid category
+        try {
+            controller.addTransaction(amount, invalid_cat);
+        } catch (InvalidTransactionException e) {
+            assertEquals("Invalid transaction", e.getMessage());
+        }
+        
         // Post-condition: List of transactions is the same size as before the invalid input
         assertEquals(initial_size, model.getTransactions().size());
     	
         // Check the total amount
         assertEquals(amount, getTotalCost(), 0.01);
-
-        // TODO: check that pop-up dialogue shows up
     }
 
 
@@ -183,7 +206,11 @@ public class TestExample {
     
         double amount = 50.0;
         String category = "food";
-        assertTrue(controller.addTransaction(amount, category));
+        try {
+            assertTrue(controller.addTransaction(amount, category));
+        } catch (InvalidTransactionException e) {
+            assertTrue(false); // test fails if exception is caught
+        }
     
         // ...
     }
@@ -197,7 +224,11 @@ public class TestExample {
     
         double amount = 50.0;
         String category = "food";
-        assertTrue(controller.addTransaction(amount, category));
+        try {
+            assertTrue(controller.addTransaction(amount, category));
+        } catch (InvalidTransactionException e) {
+            assertTrue(false); // test fails if exception is caught
+        }
     
         // ...
     }
@@ -229,7 +260,12 @@ public class TestExample {
         // transaction is added
         double amount = 50.0;
         String category = "food";
-        assertTrue(controller.addTransaction(amount, category));
+        try {
+            assertTrue(controller.addTransaction(amount, category));
+        } catch (InvalidTransactionException e) {
+            assertTrue(false); // test fails if exception is caught
+        }
+
         // undo button is enabled
         assertTrue(view.getUndoBtn().isEnabled());
 

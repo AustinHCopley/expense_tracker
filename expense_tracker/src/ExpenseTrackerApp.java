@@ -1,5 +1,6 @@
 import javax.swing.JOptionPane;
 import controller.ExpenseTrackerController;
+import controller.InvalidTransactionException;
 import model.ExpenseTrackerModel;
 import view.ExpenseTrackerView;
 import model.Filter.AmountFilter;
@@ -30,8 +31,12 @@ public class ExpenseTrackerApp {
       String category = view.getCategoryField();
       
       // Call controller to add transaction
-      boolean added = controller.addTransaction(amount, category);
-      
+      boolean added = false;
+      try {
+        added = controller.addTransaction(amount, category);
+      } catch(InvalidTransactionException error) {
+        System.out.println(error);
+      }
       if (!added) {
         JOptionPane.showMessageDialog(view, "Invalid amount or category entered");
         view.toFront();

@@ -37,12 +37,9 @@ public class ExpenseTrackerController {
     view.refreshTable(transactions);
   }
 
-  public boolean addTransaction(double amount, String category) {
-    if (!InputValidation.isValidAmount(amount)) {
-      return false;
-    }
-    if (!InputValidation.isValidCategory(category)) {
-      return false;
+  public boolean addTransaction(double amount, String category) throws InvalidTransactionException{
+    if (!InputValidation.isValidAmount(amount) | !InputValidation.isValidCategory(category)) {
+      throw new InvalidTransactionException("Invalid transaction");
     }
     
     Transaction t = new Transaction(amount, category);
