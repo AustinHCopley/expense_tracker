@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 import java.util.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.ParseException;
 
 import org.junit.Before;
@@ -202,30 +204,42 @@ public class TestExample {
 
 
     @Test
-    public void undoDisallowed() { // TODO
+    public void undoDisallowed() {
         // - Steps: Attempt to undo when the transactions list is empty
         // - Expected Output: Either UI widget is disabled or an error code (exception) is returned (thrown).
+
+        // Check that transaction list is empty
         assertEquals(0, model.getTransactions().size());
-    
-        double amount = 50.0;
-        String category = "food";
-        assertTrue(controller.addTransaction(amount, category));
-    
-        // ...
+        
+        // Check that undo button is not enabled
+        assertTrue(!view.getUndoBtn().isEnabled());
     }
 
 
     @Test
-    public void undoAllowed() { // TODO
+    public void undoAllowed() {
         // - Steps: Add a transaction, undo the addition
         // - Expected Output: Transaction is removed from the table, Total Cost is updated
+
+        // model starts empty
         assertEquals(0, model.getTransactions().size());
-    
+        // cannot undo yet
+        assertTrue(!view.getUndoBtn().isEnabled());
+
+        // transaction is added
         double amount = 50.0;
         String category = "food";
         assertTrue(controller.addTransaction(amount, category));
-    
-        // ...
+        // undo button is enabled
+        assertTrue(view.getUndoBtn().isEnabled());
+
+        // undo added transaction
+        controller.removeTransaction();
+        
+        // undo button is disabled
+        assertTrue(!view.getUndoBtn().isEnabled());
+        // transactions are empty
+        assertEquals(0, model.getTransactions().size());
     }
 
 }
