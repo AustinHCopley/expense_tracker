@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
@@ -16,6 +17,8 @@ import controller.ExpenseTrackerController;
 import controller.InvalidTransactionException;
 import model.ExpenseTrackerModel;
 import model.Transaction;
+import model.Filter.AmountFilter;
+import model.Filter.CategoryFilter;
 import view.ExpenseTrackerView;
 
 import javax.swing.*;
@@ -199,38 +202,80 @@ public class TestExample {
 
 
     @Test
-    public void filterByAmount() { // TODO
+    public void filterByAmount() {
         // - Steps: Add multiple transactions with different amounts, apply amount filter
         // - Expected Output: Only transactions matching the amount are returned (and will be highlighted)
         assertEquals(0, model.getTransactions().size());
     
+        // populate transaction table
         double amount = 50.0;
         String category = "food";
+        int filteredSize = 3;
         try {
+            // add two examples which won't be filtered
             assertTrue(controller.addTransaction(amount, category));
+            amount = 12.0;
+            assertTrue(controller.addTransaction(amount, category));
+
+            // add a few examples with the same amount
+            amount = 21.0;
+            for (int i = 0; i < filteredSize; i++) {
+                assertTrue(controller.addTransaction(amount, category));
+            }
         } catch (InvalidTransactionException e) {
             assertTrue(false); // test fails if exception is caught
         }
-    
-        // ...
+
+        // apply filter to transactions list
+        AmountFilter filter = new AmountFilter(amount);
+        List<Transaction> transactions = model.getTransactions();
+        List<Transaction> filteredTransactions = filter.filter(transactions);
+        
+        // Check number of filtered transactions is expected
+        assertEquals(filteredSize, filteredTransactions.size());
+        for(int i = 0; i < filteredSize; i++) {
+            assertEquals(21.0, filteredTransactions.get(0).getAmount(), 0.01);
+        }
+
     }
 
 
     @Test
-    public void filterByCategory() { // TODO
+    public void filterByCategory() {
         // - Steps: Add multiple transactions with different categories, apply category filter
         // - Expected Output: Only transactions matching the category are returned (and will be highlighted)
         assertEquals(0, model.getTransactions().size());
     
+        // populate transaction table
         double amount = 50.0;
         String category = "food";
+        int filteredSize = 3;
         try {
+            // add two examples which won't be filtered
             assertTrue(controller.addTransaction(amount, category));
+            category = "bills";
+            assertTrue(controller.addTransaction(amount, category));
+
+            // add a few examples with the same category
+            category = "travel";
+            for (int i = 0; i < filteredSize; i++) {
+                assertTrue(controller.addTransaction(amount, category));
+            }
         } catch (InvalidTransactionException e) {
             assertTrue(false); // test fails if exception is caught
         }
-    
-        // ...
+
+        // apply filter to transactions list
+        CategoryFilter filter = new CategoryFilter(category);
+        List<Transaction> transactions = model.getTransactions();
+        List<Transaction> filteredTransactions = filter.filter(transactions);
+        
+        // Check number of filtered transactions is expected
+        assertEquals(filteredSize, filteredTransactions.size());
+        for(int i = 0; i < filteredSize; i++) {
+            assertEquals(category, filteredTransactions.get(0).getCategory());
+        }
+
     }
 
 
