@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import model.ExpenseTrackerModel;
 import model.Transaction;
 import model.Filter.TransactionFilter;
+import controller.InvalidTransactionException;
 
 public class ExpenseTrackerController {
   
